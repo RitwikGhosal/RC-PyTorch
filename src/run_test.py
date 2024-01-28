@@ -26,6 +26,7 @@ from collections import defaultdict
 from typing import List, Dict, Tuple
 import time
 import os
+import glob
 
 import torch.backends.cudnn
 
@@ -227,7 +228,10 @@ def parse_flags(args):
 
 
     if flags.clf_p:
-        assert os.path.isfile(flags.clf_p), flags.clf_p
+        #assert os.path.isfile(flags.clf_p), flags.clf_p
+        clf_files = glob.glob(flags.clf_p)
+        assert clf_files, "No files found matching pattern :{}".format(flags.clf_p)
+        assert all(os.path.isfile(file) for file in clf_files), "Not all paths are valid files : {}".format(clf_files)        
 
     if flags.compare_theory and not flags.write_to_files:
         raise ValueError('Cannot have --compare_theory without --write_to_files.')
